@@ -1,5 +1,7 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.applet.*;
+
+import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
@@ -10,9 +12,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class GUI implements Runnable, KeyListener, ActionListener {
 	public JFrame mainf;
@@ -48,6 +53,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 	// settings
 	private int width, height;					// default screen width, height
+	private Image weapon1;
 	private int p1_forward = KeyEvent.VK_UP;
 	private int p1_left = KeyEvent.VK_LEFT;
 	private int p1_right = KeyEvent.VK_RIGHT;
@@ -75,7 +81,8 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			bq1.addLast(System.currentTimeMillis());
 			bq2.addLast(System.currentTimeMillis());
 		}
-
+		
+		
 		Setting.gravitationalIsExist = false;
 		Setting.gravitationalIsVisible = false;
 		mainp = new JPanel();
@@ -159,6 +166,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		this.width = (fullscreen ? gd.getDisplayMode().getWidth() : 600 );
 		this.height = (fullscreen? gd.getDisplayMode().getHeight() : 400 );
+		weapon1 = new ImageIcon(this.getClass().getResource("v1.png")).getImage();
 
 		mainf.setSize(width, height);
 		mainf.setResizable(false);
@@ -168,12 +176,23 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		mainf.add(settingPanel);
 		mainf.addKeyListener(this);
 		mainf.setVisible(true);
-
 	}
 
 	private void reset_score() {
 		score1 = 0;
 		score2 = 0;
+	}
+
+	private void reset_ship1() {
+		ship1 = new Ship(width/2-100, height/2, 0, 0);
+	}
+
+	private void reset_ship2() {
+		ship2 = new Ship(width/2+100, height/2, 0, 0);
+	}
+
+	private void reset_alien() {
+
 	}
 
 	private void obInit() {
@@ -197,12 +216,10 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			tmpAsteroid.isAlive = true;
 			astList.add(tmpAsteroid);
 		}
-		if(life1 > 0){
-			ship1 = new Ship((int)(Math.random() * width), (int)(Math.random() * height), 0, 0);
-		}
-		if(life2 > 0){
-			ship2 = new Ship((int)(Math.random() * width), (int)(Math.random() * height), 0, 0);
-		}
+		if(life1 > 0)
+			reset_ship1();
+		if(life2 > 0)
+			reset_ship2();
 		bullets = new ArrayList<Bullet>();
 		smallAsts = new ArrayList<AsteroidSmall>();
 		alien = new AlienShip((int)(Math.random() * width), (int)(Math.random() * height), 2 + level, 180, 200);
@@ -259,7 +276,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.setColor(Color.BLUE);
 			// g2d.translate(300, 200);
 			// g2d.rotate(Math.toRadians(rogueShip.heading));
-			g2d.fillRect(width/2-10, height/2-10, 20, 20);
+			g2d.fillRect(290, 190, 20, 20);
 			// g2d.drawString("G", 295, 195);
 		}
 
@@ -270,8 +287,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.translate(ship1.x, ship1.y);
 			g2d.rotate(Math.toRadians(ship1.heading));
 			g2d.drawPolygon(ship1.shipX, ship1.shipY, ship1.shipX.length);
-			g2d.drawImage(new ImageIcon(this.getClass().getResource("v1.png")).getImage(),-15,-15,null);
-
+			g2d.drawImage(weapon1,-15,-15,null);
 		}
 
 		if (ship2.isAlive) {
@@ -353,6 +369,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				Thread.sleep( 20 );
 			} catch( InterruptedException ex ) {}
 			if (run) {
+
 				gameRender();
 				paintScreen();
 				if (ship1.isAlive || ship2.isAlive) {
@@ -372,7 +389,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				} else {
 					run = false;
 					new HighScore(score1, score2, 1);
-				
+
 				}
 				try {
 					Thread.sleep(100);
@@ -480,29 +497,29 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 		if (Setting.gravitationalIsExist) {
 			if (ship1.isAlive) {
-				if (ship1.x > width/2) {
+				if (ship1.x > 300) {
 					ship1.x--;
-				} else if (ship1.x < width/2) {
+				} else if (ship1.x < 300) {
 					ship1.x++;
 				}
 
-				if (ship1.y > height/2) {
+				if (ship1.y > 200) {
 					ship1.y--;
-				} else if (ship1.y < height/2) {
+				} else if (ship1.y < 200) {
 					ship1.y++;
 				}
 			}
 
 			if (ship2.isAlive) {
-				if (ship2.x > width/2) {
+				if (ship2.x > 300) {
 					ship2.x--;
-				} else if (ship2.x < width/2) {
+				} else if (ship2.x < 300) {
 					ship2.x++;
 				}
 
-				if (ship2.y > height/2) {
+				if (ship2.y > 200) {
 					ship2.y--;
-				} else if (ship2.y < height/2) {
+				} else if (ship2.y < 200) {
 					ship2.y++;
 				}
 			}
@@ -616,14 +633,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			if (Setting.gravitationalIsExist) {
 				if (((290 < ship1.x) && (310 > ship1.x)) && (190 < ship1.y)
 						&& (210 > ship1.y)) {
-					ship1 = new Ship(200, 200, 0, 0);
-					if (life1 <= 0) {
+					reset_ship1();
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 <= 0) {
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -631,14 +648,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 				if (((290 < ship2.x) && (310 > ship2.x)) && (190 < ship2.y)
 						&& (210 > ship2.y)) {
-					ship2 = new Ship(height, 200, 0, 0);
-					if (life2 <= 0) {
+					reset_ship2();
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 <= 0) {
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -648,28 +665,28 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			for (Bullet abullet : alienbullets) {
 				if (((abullet.x < (ship1.x + 10)) && (abullet.x > (ship1.x - 10)))
 						&& ((abullet.y < (ship1.y + 10)) && (abullet.y > (ship1.y - 10)))) {
-					ship1 = new Ship(200, 200, 0, 0);
-					if (life1 <= 0) {
+					reset_ship1();
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 <= 0) {
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
 					Atemp.add(abullet);
 				} else if (((abullet.x < (ship2.x + 10)) && (abullet.x > (ship2.x - 10)))
 						&& ((abullet.y < (ship2.y + 10)) && (abullet.y > (ship2.y - 10)))) {
-					ship2 = new Ship(height, 200, 0, 0);
-					if (life2 <= 0) {
+					reset_ship2();
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 <= 0) {
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -682,17 +699,17 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			if (((ship1.x < (alien.x + 20)) && (ship1.x > (alien.x - 20)))
 					&& ((ship1.y < (alien.y + 10)) && (ship1.y > (alien.y - 10)))) {
 				alien.hp--;
-				ship1 = new Ship(200, 200, 0, 0);
+				reset_ship1();
 				if (alien.hp == 0) {
 					alien.isAlive = false;
 				}
-				if (life1 <= 0) {
+				if (life1 == 0) {
 					ship1.isAlive = false;
 				}
 				if (life1 > 0) {
 					life1--;
 				}
-				if (life1 <= 0) {
+				if (life1 == 0) {
 					ship1.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -701,17 +718,17 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			if (((ship2.x < (alien.x + 20)) && (ship2.x > (alien.x - 20)))
 					&& ((ship2.y < (alien.y + 10)) && (ship2.y > (alien.y - 10)))) {
 				alien.hp--;
-				ship2 = new Ship(height, 200, 0, 0);
+				reset_ship2();
 				if (alien.hp == 0) {
 					alien.isAlive = false;
 				}
-				if (life2 <= 0) {
+				if (life2 == 0) {
 					ship2.isAlive = false;
 				}
 				if (life2 > 0) {
 					life2--;
 				}
-				if (life2 <= 0) {
+				if (life2 == 0) {
 					ship2.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -721,14 +738,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 					&& ((ship1.y < (rogueShip.y + 10)) && (ship1.y > (rogueShip.y - 10)))) {
 
 				rogueShip.isAlive = false;
-				ship1 = new Ship(200, 200, 0, 0);
-				if (life1 <= 0) {
+				reset_ship1();
+				if (life1 == 0) {
 					ship1.isAlive = false;
 				}
 				if (life1 > 0) {
 					life1--;
 				}
-				if (life1 <= 0) {
+				if (life1 == 0) {
 					ship1.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -738,14 +755,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 					&& ((ship2.y < (rogueShip.y + 10)) && (ship2.y > (rogueShip.y - 10)))) {
 
 				rogueShip.isAlive = false;
-				ship2 = new Ship(height, 200, 0, 0);
-				if (life2 <= 0) {
+				reset_ship2();
+				if (life2 == 0) {
 					ship2.isAlive = false;
 				}
 				if (life2 > 0) {
 					life2--;
 				}
-				if (life2 <= 0) {
+				if (life2 == 0) {
 					ship2.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -763,10 +780,10 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							alien.isAlive = false;
 							if (bullet.owner == Bullet.SHIP1) {
 								score1 += 100;
-							
+
 							} else {
 								score2 += 100;
-							
+
 							}
 						}
 						tempB.add(bullet);
@@ -786,7 +803,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							alientime++;
 						}
 					}
-					
+
 
 				}
 
@@ -828,15 +845,15 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			for (AsteroidSmall ast : smallAsts) {
 				if (((ship1.x < (ast.x + 15)) && (ship1.x > (ast.x - 15)))
 						&& ((ship1.y < (ast.y + 15)) && (ship1.y > (ast.y - 15)))) {
-					ship1 = new Ship(200, 200, 0, 0);
+					reset_ship1();
 					tempS.add(ast);
-					if (life1 <= 0) {
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 <= 0) {
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -846,7 +863,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			for (Asteroid ast : astList) {
 				if (((ship1.x < (ast.x + 25)) && (ship1.x > (ast.x - 25)))
 						&& ((ship1.y < (ast.y + 25)) && (ship1.y > (ast.y - 25)))) {
-					ship1 = new Ship(200, 200, 0, 0);
+					reset_ship1();
 					tempA.add(ast);
 					smallAsts
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
@@ -854,13 +871,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
 					smallAsts
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
-					if (life1 <= 0) {
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 <= 0) {
+					if (life1 == 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -871,15 +888,15 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			for (AsteroidSmall ast : smallAsts) {
 				if (((ship2.x < (ast.x + 15)) && (ship2.x > (ast.x - 15)))
 						&& ((ship2.y < (ast.y + 15)) && (ship2.y > (ast.y - 15)))) {
-					ship2 = new Ship(height, 200, 0, 0);
+					reset_ship2();
 					tempS.add(ast);
-					if (life2 <= 0) {
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 <= 0) {
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -890,7 +907,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			for (Asteroid ast : astList) {
 				if (((ship2.x < (ast.x + 25)) && (ship2.x > (ast.x - 25)))
 						&& ((ship2.y < (ast.y + 25)) && (ship2.y > (ast.y - 25)))) {
-					ship2 = new Ship(height, 200, 0, 0);
+					reset_ship2();
 					tempA.add(ast);
 					smallAsts
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
@@ -898,13 +915,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
 					smallAsts
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
-					if (life2 <= 0) {
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 <= 0) {
+					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -913,7 +930,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			}
 
 		} catch (Exception e) {
-			//System.out.println();
+			System.out.println();
 			e.printStackTrace();
 		}
 		for (Bullet bullet : tempB) {
@@ -946,6 +963,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			}
 		} else if (arg0.getKeyCode() == p1_forward) {
 			// System.out.println("speed______");
+			if (ship1.speed == 0) {
+				ship1.speed = 1;
+			}
 			ship1.speed++;
 		} else if (arg0.getKeyCode() == p2_right) {
 			ship2.heading += 45;
@@ -959,18 +979,16 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			}
 		} else if (arg0.getKeyCode() == p2_forward) {
 			// System.out.println("speed______");
+			if (ship2.speed == 0) {
+				ship2.speed = 1;
+			}
 			ship2.speed++;
 		} else if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			// System.out.println("speed______");
-			if ( run ) {
-				run = false;
-				startLevel.setText("" + level);
-				numAstField.setText("" + Setting.astNum);
-				settingPanel.setVisible(true);
-			} else {
-				run = true;
-				settingPanel.setVisible(false);
-			}
+			run = false;
+			startLevel.setText("" + level);
+			numAstField.setText("" + Setting.astNum);
+			settingPanel.setVisible(true);
 		}
 	}
 
@@ -981,8 +999,8 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		} else if (arg0.getKeyCode() == p1_attack) {
 			// System.out.println("speed______");
 			if (ship1.isAlive) {
-				if(System.currentTimeMillis() - bq1.getFirst() > 200){	
-				
+				if(System.currentTimeMillis() - bq1.getFirst() > 200){
+
 				Bullet newBullet = new Bullet(ship1.x, ship1.y, ship1.heading,
 						Bullet.SHIP1);
 				bullets.add(newBullet);
@@ -990,7 +1008,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				bq1.removeFirst();
 				bq1.addLast(System.currentTimeMillis());
 				}
-				
+
 			}
 		} else if (arg0.getKeyCode() == p2_forward) {
 			ship2.speed = 0;
@@ -1226,7 +1244,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				Setting.gravitationalIsVisible = false;
 				gravVis = false;
 			}
-			// System.out.println(Setting.gravitationalIsVisible);
+//			System.out.println(Setting.gravitationalIsVisible);
 
 			if (unlimLifeTrue.isSelected()) {
 				Setting.unlimitLife = true;
