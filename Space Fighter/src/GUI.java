@@ -340,7 +340,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	public void gamePlay() {
 
 		while (true) {
-			System.out.print("here");
+			try {
+				Thread.sleep( 20 );
+			} catch( InterruptedException ex ) {}
 			if (run) {
 
 				gameRender();
@@ -958,10 +960,15 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			ship2.speed++;
 		} else if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			// System.out.println("speed______");
-			run = false;
-			startLevel.setText("" + level);
-			numAstField.setText("" + Setting.astNum);
-			settingPanel.setVisible(true);
+			if ( run ) {
+				run = false;
+				startLevel.setText("" + level);
+				numAstField.setText("" + Setting.astNum);
+				settingPanel.setVisible(true);
+			} else {
+				run = true;
+				settingPanel.setVisible(false);
+			}
 		}
 	}
 
