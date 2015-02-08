@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -55,7 +56,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private int p2_left = KeyEvent.VK_A;
 	private int p2_right = KeyEvent.VK_D;
 	private int p2_attack = KeyEvent.VK_J;
-	private boolean fullscreen = true;
+	private boolean fullscreen = false;
 
 	GUI() {
 		se = new SEPlayer();
@@ -209,7 +210,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		starttime = System.currentTimeMillis();
 		starttime2 = System.currentTimeMillis();
 		alientime = 0;
-		rogueShip = new Ship(300, 200, 0, 0);
+		rogueShip = new Ship((int)(Math.random() * width), (int)(Math.random() * height), 0, 0);
 		rogueShip.speed = level + 3;
 	}
 
@@ -269,6 +270,8 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.translate(ship1.x, ship1.y);
 			g2d.rotate(Math.toRadians(ship1.heading));
 			g2d.drawPolygon(ship1.shipX, ship1.shipY, ship1.shipX.length);
+			g2d.drawImage(new ImageIcon(this.getClass().getResource("v1.png")).getImage(),-15,-15,null);
+
 		}
 
 		if (ship2.isAlive) {
@@ -477,29 +480,29 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 		if (Setting.gravitationalIsExist) {
 			if (ship1.isAlive) {
-				if (ship1.x > 300) {
+				if (ship1.x > width/2) {
 					ship1.x--;
-				} else if (ship1.x < 300) {
+				} else if (ship1.x < width/2) {
 					ship1.x++;
 				}
 
-				if (ship1.y > 200) {
+				if (ship1.y > height/2) {
 					ship1.y--;
-				} else if (ship1.y < 200) {
+				} else if (ship1.y < height/2) {
 					ship1.y++;
 				}
 			}
 
 			if (ship2.isAlive) {
-				if (ship2.x > 300) {
+				if (ship2.x > width/2) {
 					ship2.x--;
-				} else if (ship2.x < 300) {
+				} else if (ship2.x < width/2) {
 					ship2.x++;
 				}
 
-				if (ship2.y > 200) {
+				if (ship2.y > height/2) {
 					ship2.y--;
-				} else if (ship2.y < 200) {
+				} else if (ship2.y < height/2) {
 					ship2.y++;
 				}
 			}
