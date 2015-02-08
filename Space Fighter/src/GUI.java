@@ -1,12 +1,5 @@
 import javax.swing.*;
-import java.applet.*;
-
-import java.applet.Applet;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.io.BufferedReader;
@@ -16,12 +9,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class GUI implements Runnable, KeyListener, ActionListener {
 	public JFrame mainf;
@@ -54,6 +44,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private SEPlayer se;
 	private LinkedList<Long> bq1,bq2;
 	static Boolean quitB = false;
+
+	private int width, height;					// default screen width, height
+	private boolean fullscreen = true;
 
 	GUI() {
 		se = new SEPlayer();
@@ -154,7 +147,11 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		mainf = new JFrame("Asteriod Game");
 		mainf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		mainf.setSize(600, 400);
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		this.width = (fullscreen ? gd.getDisplayMode().getWidth() : 600 );
+		this.height = (fullscreen? gd.getDisplayMode().getHeight() : 400 );
+
+		mainf.setSize(width, height);
 		mainf.setResizable(false);
 		// mainf.setBackground(Color.BLUE);
 
@@ -174,16 +171,16 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		for (int i = 0; i < Setting.astNum; i++) {
 			Asteroid tmpAsteroid;
 			if (i % 4 == 0) {
-				tmpAsteroid = new Asteroid((int) (Math.random() * 600), 0,
+				tmpAsteroid = new Asteroid((int) (Math.random() * width), 0,
 						3 + level, 0);
 			} else if (i % 4 == 1) {
-				tmpAsteroid = new Asteroid((int) (Math.random() * 600), 400,
+				tmpAsteroid = new Asteroid((int) (Math.random() * width), height,
 						3 + level, 0);
 			} else if (i % 4 == 2) {
-				tmpAsteroid = new Asteroid(600, (int) (Math.random() * 400),
+				tmpAsteroid = new Asteroid(width, (int) (Math.random() * height),
 						3 + level, 0);
 			} else {
-				tmpAsteroid = new Asteroid(0, (int) (Math.random() * 400),
+				tmpAsteroid = new Asteroid(0, (int) (Math.random() * height),
 						3 + level, 0);
 			}
 
@@ -191,14 +188,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			astList.add(tmpAsteroid);
 		}
 		if(life1 > 0){
-			ship1 = new Ship(200, 200, 0, 0);
+			ship1 = new Ship((int)(Math.random() * width), (int)(Math.random() * height), 0, 0);
 		}
 		if(life2 > 0){
-			ship2 = new Ship(400, 200, 0, 0);
+			ship2 = new Ship((int)(Math.random() * width), (int)(Math.random() * height), 0, 0);
 		}
 		bullets = new ArrayList<Bullet>();
 		smallAsts = new ArrayList<AsteroidSmall>();
-		alien = new AlienShip(400, 400, 2 + level, 180, 200);
+		alien = new AlienShip((int)(Math.random() * width), (int)(Math.random() * height), 2 + level, 180, 200);
 		alienbullets = new ArrayList<Bullet>();
 		starttime = System.currentTimeMillis();
 		starttime2 = System.currentTimeMillis();
@@ -222,7 +219,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	public void gameRender() {
 		// if (this.dbImage == null)
 		// {
-		this.dbImage = mainp.createImage(600, 400);
+		this.dbImage = mainp.createImage(width, height);
 		if (this.dbImage == null) {
 			System.out.println("dbImage is null");
 			return;
@@ -231,7 +228,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		// }
 		// System.out.println(dbImage + "" + g2d);
 		this.g2d.setColor(Color.BLACK);
-		this.g2d.fillRect(0, 0, 600, 400);
+		this.g2d.fillRect(0, 0, width, height);
 		this.g2d.setColor(Color.WHITE);
 		g2d.drawString("Ship1 Score: " + score1, 0, 20);
 		if (Setting.unlimitLife) {
@@ -390,17 +387,17 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		rogueShip.heading = (int) (rogueShip.heading + Math.random() * 3);
 		rogueShip.x = rogueShip.x
 				- (int) (Math.sin(Math.toRadians(rogueShip.heading)) * rogueShip.speed);
-		if (rogueShip.x > 600) {
-			rogueShip.x -= 600;
+		if (rogueShip.x > width) {
+			rogueShip.x -= width;
 		} else if (rogueShip.x < 0) {
-			rogueShip.x += 600;
+			rogueShip.x += width;
 		}
 		rogueShip.y = (int) (Math.cos(Math.toRadians(rogueShip.heading)) * rogueShip.speed)
 				+ rogueShip.y;
-		if (rogueShip.y > 400) {
-			rogueShip.y -= 400;
+		if (rogueShip.y > height) {
+			rogueShip.y -= height;
 		} else if (rogueShip.y < 0) {
-			rogueShip.y += 400;
+			rogueShip.y += height;
 		}
 		nowtime = System.currentTimeMillis();
 		if (nowtime - starttime2 >= 2000) {
@@ -417,17 +414,17 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		alien.heading = (int) (alien.heading + Math.random() * 3);
 		alien.x = alien.x
 				- (int) (Math.sin(Math.toRadians(alien.heading)) * alien.speed);
-		if (alien.x > 600) {
-			alien.x -= 600;
+		if (alien.x > width) {
+			alien.x -= width;
 		} else if (alien.x < 0) {
-			alien.x += 600;
+			alien.x += width;
 		}
 		alien.y = (int) (Math.cos(Math.toRadians(alien.heading)) * alien.speed)
 				+ alien.y;
-		if (alien.y > 400) {
-			alien.y -= 400;
+		if (alien.y > height) {
+			alien.y -= height;
 		} else if (alien.y < 0) {
-			alien.y += 400;
+			alien.y += height;
 		}
 		nowtime = System.currentTimeMillis();
 		if (nowtime - starttime >= 2000) {
@@ -442,32 +439,32 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private void updateShip() {
 		ship1.x = ship1.x
 				- (int) (Math.sin(Math.toRadians(ship1.heading)) * ship1.speed);
-		if (ship1.x > 600) {
-			ship1.x -= 600;
+		if (ship1.x > width) {
+			ship1.x -= width;
 		} else if (ship1.x < 0) {
-			ship1.x += 600;
+			ship1.x += width;
 		}
 		ship1.y = (int) (Math.cos(Math.toRadians(ship1.heading)) * ship1.speed)
 				+ ship1.y;
-		if (ship1.y > 400) {
-			ship1.y -= 400;
+		if (ship1.y > height) {
+			ship1.y -= height;
 		} else if (ship1.y < 0) {
-			ship1.y += 400;
+			ship1.y += height;
 		}
 
 		ship2.x = ship2.x
 				- (int) (Math.sin(Math.toRadians(ship2.heading)) * ship2.speed);
-		if (ship2.x > 600) {
-			ship2.x -= 600;
+		if (ship2.x > width) {
+			ship2.x -= width;
 		} else if (ship2.x < 0) {
-			ship2.x += 600;
+			ship2.x += width;
 		}
 		ship2.y = (int) (Math.cos(Math.toRadians(ship2.heading)) * ship2.speed)
 				+ ship2.y;
-		if (ship2.y > 400) {
-			ship2.y -= 400;
+		if (ship2.y > height) {
+			ship2.y -= height;
 		} else if (ship2.y < 0) {
-			ship2.y += 400;
+			ship2.y += height;
 		}
 
 		if (Setting.gravitationalIsExist) {
@@ -505,34 +502,34 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		for (Asteroid ast : astList) {
 			ast.x = ast.x
 					- (int) (Math.sin(Math.toRadians(ast.heading)) * ast.speed);
-			if (ast.x > 600) {
-				ast.x -= 600;
+			if (ast.x > width) {
+				ast.x -= width;
 			} else if (ast.x < 0) {
-				ast.x += 600;
+				ast.x += width;
 			}
 			ast.y = (int) (Math.cos(Math.toRadians(ast.heading)) * ast.speed)
 					+ ast.y;
-			if (ast.y > 400) {
-				ast.y -= 400;
+			if (ast.y > height) {
+				ast.y -= height;
 			} else if (ast.y < 0) {
-				ast.y += 400;
+				ast.y += height;
 			}
 		}
 
 		for (AsteroidSmall ast : smallAsts) {
 			ast.x = ast.x
 					- (int) (Math.sin(Math.toRadians(ast.heading)) * ast.speed);
-			if (ast.x > 600) {
-				ast.x -= 600;
+			if (ast.x > width) {
+				ast.x -= width;
 			} else if (ast.x < 0) {
-				ast.x += 600;
+				ast.x += width;
 			}
 			ast.y = (int) (Math.cos(Math.toRadians(ast.heading)) * ast.speed)
 					+ ast.y;
-			if (ast.y > 400) {
-				ast.y -= 400;
+			if (ast.y > height) {
+				ast.y -= height;
 			} else if (ast.y < 0) {
-				ast.y += 400;
+				ast.y += height;
 			}
 		}
 
@@ -543,21 +540,21 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		for (Bullet bullet : bullets) {
 			bullet.x = bullet.x
 					- (int) (Math.sin(Math.toRadians(bullet.heading)) * bullet.speed);
-			if (bullet.x > 600) {
-				bullet.x -= 600;
+			if (bullet.x > width) {
+				bullet.x -= width;
 			} else if (bullet.x < 0) {
-				bullet.x += 600;
+				bullet.x += width;
 			}
 			bullet.y = (int) (Math.cos(Math.toRadians(bullet.heading)) * bullet.speed)
 					+ bullet.y;
-			if (bullet.y > 400) {
-				bullet.y -= 400;
+			if (bullet.y > height) {
+				bullet.y -= height;
 			} else if (bullet.y < 0) {
-				bullet.y += 400;
+				bullet.y += height;
 			}
 
 			bullet.dis += 10;
-			if (bullet.dis > 400) {
+			if (bullet.dis > height) {
 				tempList.add(bullet);
 				// bullets.remove(bullet);
 			}
@@ -573,21 +570,21 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		for (Bullet bullet : alienbullets) {
 			bullet.x = bullet.x
 					- (int) (Math.sin(Math.toRadians(bullet.heading)) * bullet.speed);
-			if (bullet.x > 600) {
-				bullet.x -= 600;
+			if (bullet.x > width) {
+				bullet.x -= width;
 			} else if (bullet.x < 0) {
-				bullet.x += 600;
+				bullet.x += width;
 			}
 			bullet.y = (int) (Math.cos(Math.toRadians(bullet.heading)) * bullet.speed)
 					+ bullet.y;
-			if (bullet.y > 400) {
-				bullet.y -= 400;
+			if (bullet.y > height) {
+				bullet.y -= height;
 			} else if (bullet.y < 0) {
-				bullet.y += 400;
+				bullet.y += height;
 			}
 
 			bullet.dis += 10;
-			if (bullet.dis > 400) {
+			if (bullet.dis > height) {
 				tempList.add(bullet);
 				// bullets.remove(bullet);
 			}
@@ -623,7 +620,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 				if (((290 < ship2.x) && (310 > ship2.x)) && (190 < ship2.y)
 						&& (210 > ship2.y)) {
-					ship2 = new Ship(400, 200, 0, 0);
+					ship2 = new Ship(height, 200, 0, 0);
 					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
@@ -654,7 +651,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 					Atemp.add(abullet);
 				} else if (((abullet.x < (ship2.x + 10)) && (abullet.x > (ship2.x - 10)))
 						&& ((abullet.y < (ship2.y + 10)) && (abullet.y > (ship2.y - 10)))) {
-					ship2 = new Ship(400, 200, 0, 0);
+					ship2 = new Ship(height, 200, 0, 0);
 					if (life2 == 0) {
 						ship2.isAlive = false;
 					}
@@ -693,7 +690,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			if (((ship2.x < (alien.x + 20)) && (ship2.x > (alien.x - 20)))
 					&& ((ship2.y < (alien.y + 10)) && (ship2.y > (alien.y - 10)))) {
 				alien.hp--;
-				ship2 = new Ship(400, 200, 0, 0);
+				ship2 = new Ship(height, 200, 0, 0);
 				if (alien.hp == 0) {
 					alien.isAlive = false;
 				}
@@ -730,7 +727,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 					&& ((ship2.y < (rogueShip.y + 10)) && (ship2.y > (rogueShip.y - 10)))) {
 
 				rogueShip.isAlive = false;
-				ship2 = new Ship(400, 200, 0, 0);
+				ship2 = new Ship(height, 200, 0, 0);
 				if (life2 == 0) {
 					ship2.isAlive = false;
 				}
@@ -863,7 +860,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			for (AsteroidSmall ast : smallAsts) {
 				if (((ship2.x < (ast.x + 15)) && (ship2.x > (ast.x - 15)))
 						&& ((ship2.y < (ast.y + 15)) && (ship2.y > (ast.y - 15)))) {
-					ship2 = new Ship(400, 200, 0, 0);
+					ship2 = new Ship(height, 200, 0, 0);
 					tempS.add(ast);
 					if (life2 == 0) {
 						ship2.isAlive = false;
@@ -882,7 +879,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			for (Asteroid ast : astList) {
 				if (((ship2.x < (ast.x + 25)) && (ship2.x > (ast.x - 25)))
 						&& ((ship2.y < (ast.y + 25)) && (ship2.y > (ast.y - 25)))) {
-					ship2 = new Ship(400, 200, 0, 0);
+					ship2 = new Ship(height, 200, 0, 0);
 					tempA.add(ast);
 					smallAsts
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
@@ -905,7 +902,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			}
 
 		} catch (Exception e) {
-			System.out.println();
+			//System.out.println();
 			e.printStackTrace();
 		}
 		for (Bullet bullet : tempB) {
@@ -1224,7 +1221,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				Setting.gravitationalIsVisible = false;
 				gravVis = false;
 			}
-			System.out.println(Setting.gravitationalIsVisible);
+			// System.out.println(Setting.gravitationalIsVisible);
 
 			if (unlimLifeTrue.isSelected()) {
 				Setting.unlimitLife = true;
