@@ -45,7 +45,16 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private LinkedList<Long> bq1,bq2;
 	static Boolean quitB = false;
 
+	// settings
 	private int width, height;					// default screen width, height
+	private int p1_forward = KeyEvent.VK_UP;
+	private int p1_left = KeyEvent.VK_LEFT;
+	private int p1_right = KeyEvent.VK_RIGHT;
+	private int p1_attack = KeyEvent.VK_SPACE;
+	private int p2_forward = KeyEvent.VK_W;
+	private int p2_left = KeyEvent.VK_A;
+	private int p2_right = KeyEvent.VK_D;
+	private int p2_attack = KeyEvent.VK_J;
 	private boolean fullscreen = true;
 
 	GUI() {
@@ -65,8 +74,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			bq1.addLast(System.currentTimeMillis());
 			bq2.addLast(System.currentTimeMillis());
 		}
-		
-		
+
 		Setting.gravitationalIsExist = false;
 		Setting.gravitationalIsVisible = false;
 		mainp = new JPanel();
@@ -159,6 +167,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		mainf.add(settingPanel);
 		mainf.addKeyListener(this);
 		mainf.setVisible(true);
+
 	}
 
 	private void reset_score() {
@@ -242,14 +251,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		} else {
 			g2d.drawString("Ship2 Life: " + life2, 0, 80);
 		}
-		g2d.drawString("Level: " + level, 270, 20);
+		g2d.drawString("Level: " + level, width/2-30, 20);
 
 		if (gravVis) {
 			g2d.setTransform(identity);
 			g2d.setColor(Color.BLUE);
 			// g2d.translate(300, 200);
 			// g2d.rotate(Math.toRadians(rogueShip.heading));
-			g2d.fillRect(290, 190, 20, 20);
+			g2d.fillRect(width/2-10, height/2-10, 20, 20);
 			// g2d.drawString("G", 295, 195);
 		}
 
@@ -271,7 +280,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		}
 		this.g2d.setColor(Color.WHITE);
 		if ((!ship1.isAlive) && (!ship2.isAlive)) {
-			g2d.drawString("Game over", 260, 190);
+			g2d.drawString("Game over", width/2-40, height/2-10);
 		}
 		for (Asteroid asteroid : astList) {
 			// System.out.println(asteroid.x + " " +asteroid.y +
@@ -341,7 +350,6 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				Thread.sleep( 20 );
 			} catch( InterruptedException ex ) {}
 			if (run) {
-
 				gameRender();
 				paintScreen();
 				if (ship1.isAlive || ship2.isAlive) {
@@ -606,13 +614,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				if (((290 < ship1.x) && (310 > ship1.x)) && (190 < ship1.y)
 						&& (210 > ship1.y)) {
 					ship1 = new Ship(200, 200, 0, 0);
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -621,13 +629,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				if (((290 < ship2.x) && (310 > ship2.x)) && (190 < ship2.y)
 						&& (210 > ship2.y)) {
 					ship2 = new Ship(height, 200, 0, 0);
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -638,13 +646,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				if (((abullet.x < (ship1.x + 10)) && (abullet.x > (ship1.x - 10)))
 						&& ((abullet.y < (ship1.y + 10)) && (abullet.y > (ship1.y - 10)))) {
 					ship1 = new Ship(200, 200, 0, 0);
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -652,13 +660,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				} else if (((abullet.x < (ship2.x + 10)) && (abullet.x > (ship2.x - 10)))
 						&& ((abullet.y < (ship2.y + 10)) && (abullet.y > (ship2.y - 10)))) {
 					ship2 = new Ship(height, 200, 0, 0);
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -675,13 +683,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				if (alien.hp == 0) {
 					alien.isAlive = false;
 				}
-				if (life1 == 0) {
+				if (life1 <= 0) {
 					ship1.isAlive = false;
 				}
 				if (life1 > 0) {
 					life1--;
 				}
-				if (life1 == 0) {
+				if (life1 <= 0) {
 					ship1.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -694,13 +702,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				if (alien.hp == 0) {
 					alien.isAlive = false;
 				}
-				if (life2 == 0) {
+				if (life2 <= 0) {
 					ship2.isAlive = false;
 				}
 				if (life2 > 0) {
 					life2--;
 				}
-				if (life2 == 0) {
+				if (life2 <= 0) {
 					ship2.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -711,13 +719,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 				rogueShip.isAlive = false;
 				ship1 = new Ship(200, 200, 0, 0);
-				if (life1 == 0) {
+				if (life1 <= 0) {
 					ship1.isAlive = false;
 				}
 				if (life1 > 0) {
 					life1--;
 				}
-				if (life1 == 0) {
+				if (life1 <= 0) {
 					ship1.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -728,13 +736,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 				rogueShip.isAlive = false;
 				ship2 = new Ship(height, 200, 0, 0);
-				if (life2 == 0) {
+				if (life2 <= 0) {
 					ship2.isAlive = false;
 				}
 				if (life2 > 0) {
 					life2--;
 				}
-				if (life2 == 0) {
+				if (life2 <= 0) {
 					ship2.isAlive = false;
 				}
 				se.SePlayer("explosion.wav", "1");
@@ -819,13 +827,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 						&& ((ship1.y < (ast.y + 15)) && (ship1.y > (ast.y - 15)))) {
 					ship1 = new Ship(200, 200, 0, 0);
 					tempS.add(ast);
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -843,13 +851,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
 					smallAsts
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					if (life1 > 0) {
 						life1--;
 					}
-					if (life1 == 0) {
+					if (life1 <= 0) {
 						ship1.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -862,13 +870,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 						&& ((ship2.y < (ast.y + 15)) && (ship2.y > (ast.y - 15)))) {
 					ship2 = new Ship(height, 200, 0, 0);
 					tempS.add(ast);
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -887,13 +895,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
 					smallAsts
 							.add(new AsteroidSmall(ast.x, ast.y, ast.speed, 0));
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					if (life2 > 0) {
 						life2--;
 					}
-					if (life2 == 0) {
+					if (life2 <= 0) {
 						ship2.isAlive = false;
 					}
 					se.SePlayer("explosion.wav", "1");
@@ -923,37 +931,31 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// System.out.println(arg0.getKeyCode());
-		if (arg0.getKeyCode() == KeyEvent.VK_RIGHT) {
+		if (arg0.getKeyCode() == p1_right) {
 			ship1.heading += 45;
 			if (ship1.heading == 360) {
 				ship1.heading = 0;
 			}
-		} else if (arg0.getKeyCode() == KeyEvent.VK_LEFT) {
+		} else if (arg0.getKeyCode() == p1_left) {
 			ship1.heading -= 45;
 			if (ship1.heading == -45) {
 				ship1.heading = 315;
 			}
-		} else if (arg0.getKeyCode() == KeyEvent.VK_UP) {
+		} else if (arg0.getKeyCode() == p1_forward) {
 			// System.out.println("speed______");
-			if (ship1.speed == 0) {
-				ship1.speed = 1;
-			}
 			ship1.speed++;
-		} else if (arg0.getKeyCode() == KeyEvent.VK_D) {
+		} else if (arg0.getKeyCode() == p2_right) {
 			ship2.heading += 45;
 			if (ship2.heading == 360) {
 				ship2.heading = 0;
 			}
-		} else if (arg0.getKeyCode() == KeyEvent.VK_A) {
+		} else if (arg0.getKeyCode() == p2_left) {
 			ship2.heading -= 45;
 			if (ship2.heading == -45) {
 				ship2.heading = 315;
 			}
-		} else if (arg0.getKeyCode() == KeyEvent.VK_W) {
+		} else if (arg0.getKeyCode() == p2_forward) {
 			// System.out.println("speed______");
-			if (ship2.speed == 0) {
-				ship2.speed = 1;
-			}
 			ship2.speed++;
 		} else if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			// System.out.println("speed______");
@@ -971,9 +973,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		if (arg0.getKeyCode() == KeyEvent.VK_UP) {
+		if (arg0.getKeyCode() == p1_forward) {
 			ship1.speed = 0;
-		} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+		} else if (arg0.getKeyCode() == p1_attack) {
 			// System.out.println("speed______");
 			if (ship1.isAlive) {
 				if(System.currentTimeMillis() - bq1.getFirst() > 200){	
@@ -987,9 +989,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				}
 				
 			}
-		} else if (arg0.getKeyCode() == KeyEvent.VK_W) {
+		} else if (arg0.getKeyCode() == p2_forward) {
 			ship2.speed = 0;
-		} else if (arg0.getKeyCode() == KeyEvent.VK_R) {
+		} else if (arg0.getKeyCode() == p2_attack) {
 			// System.out.println("speed______");
 			if (ship2.isAlive) {
 				if(System.currentTimeMillis() - bq1.getFirst() > 200){
