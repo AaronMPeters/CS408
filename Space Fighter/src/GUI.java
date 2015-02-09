@@ -62,7 +62,8 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private int p2_left = KeyEvent.VK_A;
 	private int p2_right = KeyEvent.VK_D;
 	private int p2_attack = KeyEvent.VK_J;
-	private boolean fullscreen = false;
+	private int menu = KeyEvent.VK_ESCAPE;
+	private boolean fullscreen = true;
 
 	GUI() {
 		se = new SEPlayer();
@@ -983,12 +984,17 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				ship2.speed = 1;
 			}
 			ship2.speed++;
-		} else if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		} else if (arg0.getKeyCode() == menu) {
 			// System.out.println("speed______");
-			run = false;
-			startLevel.setText("" + level);
-			numAstField.setText("" + Setting.astNum);
-			settingPanel.setVisible(true);
+			if ( run ) {
+				run = false;
+				startLevel.setText("" + level);
+				numAstField.setText("" + Setting.astNum);
+				settingPanel.setVisible(true);
+			} else {
+				run = true;
+				settingPanel.setVisible(false);
+			}
 		}
 	}
 
