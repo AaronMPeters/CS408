@@ -288,7 +288,11 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.translate(ship1.x, ship1.y);
 			g2d.rotate(Math.toRadians(ship1.heading));
 			g2d.drawPolygon(ship1.shipX, ship1.shipY, ship1.shipX.length);
-			g2d.drawImage(weapon1,-15,-15,null);
+			if (ship1.currentWeapon == 1) {
+				g2d.drawPolygon(ship1.LASER[0], ship1.LASER[1], ship1.LASER[0].length);
+			} else if (ship1.currentWeapon == 2) {
+				g2d.drawPolygon(ship1.BOMB[0], ship1.BOMB[1], ship1.BOMB[0].length);
+			}
 		}
 
 		if (ship2.isAlive) {
@@ -297,6 +301,11 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.translate(ship2.x, ship2.y);
 			g2d.rotate(Math.toRadians(ship2.heading));
 			g2d.drawPolygon(ship2.shipX, ship2.shipY, ship2.shipX.length);
+			if (ship2.currentWeapon == 1) {
+				g2d.drawPolygon(ship2.LASER[0], ship2.LASER[1], ship2.LASER[0].length);
+			} else if (ship2.currentWeapon == 2) {
+				g2d.drawPolygon(ship2.BOMB[0], ship2.BOMB[1], ship2.BOMB[0].length);
+			}
 		}
 		this.g2d.setColor(Color.WHITE);
 		if ((!ship1.isAlive) && (!ship2.isAlive)) {
@@ -317,7 +326,17 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.setTransform(identity);
 			// g2d.translate(bullet.x, bullet.y);
 			// g2d.rotate(Math.toRadians(bullet.heading));
-			g2d.drawOval(bullet.x, bullet.y, 2, 2);
+			if (bullet.weapon == 0) {
+				g2d.drawOval(bullet.x, bullet.y, 2, 2);
+			} else if (bullet.weapon == 1) {
+				g2d.translate(bullet.x, bullet.y);
+				g2d.rotate(Math.toRadians(bullet.heading));
+				g2d.drawPolygon(bullet.LASERX, bullet.LASERY, bullet.LASERX.length);
+			} else if (bullet.weapon == 2) {
+				g2d.translate(bullet.x, bullet.y);
+				g2d.rotate(Math.toRadians(bullet.heading));
+				g2d.drawPolygon(bullet.BOMBX, bullet.BOMBY, bullet.BOMBX.length);
+			}
 			// g2d.drawPolygon(asteroid.xs, asteroid.ys, asteroid.xs.length);
 		}
 		for (Bullet abullet : alienbullets) {
@@ -432,7 +451,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		if (nowtime - starttime2 >= 2000) {
 			// for (int i=0;i<8;i++){
 			Bullet newBullet = new Bullet(rogueShip.x, rogueShip.y,
-					(int) (Math.random() * 360), 3);
+					(int) (Math.random() * 360), 3, 0);
 			alienbullets.add(newBullet);
 			// }
 			starttime2 = nowtime;
@@ -458,7 +477,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		nowtime = System.currentTimeMillis();
 		if (nowtime - starttime >= 2000) {
 			for (int i = 0; i < 8; i++) {
-				Bullet newalienBullet = new Bullet(alien.x, alien.y, i * 45, 3);
+				Bullet newalienBullet = new Bullet(alien.x, alien.y, i * 45, 3, 0);
 				alienbullets.add(newalienBullet);
 			}
 			starttime = nowtime;
@@ -986,15 +1005,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			ship2.speed++;
 		} else if (arg0.getKeyCode() == menu) {
 			// System.out.println("speed______");
-			if ( run ) {
-				run = false;
-				startLevel.setText("" + level);
-				numAstField.setText("" + Setting.astNum);
-				settingPanel.setVisible(true);
-			} else {
-				run = true;
-				settingPanel.setVisible(false);
-			}
+			run = false;
+			startLevel.setText("" + level);
+			numAstField.setText("" + Setting.astNum);
+			settingPanel.setVisible(true);
+		} else if (arg0.getKeyCode() == KeyEvent.VK_Z) {
+			ship2.weaponchange();
+		} else if (arg0.getKeyCode() == KeyEvent.VK_COMMA) {
+			ship1.weaponchange();
 		}
 	}
 
@@ -1008,7 +1026,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				if(System.currentTimeMillis() - bq1.getFirst() > 200){
 
 				Bullet newBullet = new Bullet(ship1.x, ship1.y, ship1.heading,
-						Bullet.SHIP1);
+						Bullet.SHIP1, ship1.currentWeapon);
 				bullets.add(newBullet);
 				se.SePlayer("shoot.wav", "1");
 				bq1.removeFirst();
@@ -1023,7 +1041,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			if (ship2.isAlive) {
 				if(System.currentTimeMillis() - bq1.getFirst() > 200){
 				Bullet newBullet = new Bullet(ship2.x, ship2.y, ship2.heading,
-						Bullet.SHIP2);
+						Bullet.SHIP2, ship2.currentWeapon);
 				bullets.add(newBullet);
 				se.SePlayer("shoot.wav", "1");
 				bq1.removeFirst();
@@ -1140,7 +1158,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							ast.heading = Integer.parseInt(line[5]);
 							smallAsts.add(ast);
 						} else if (Integer.parseInt(line[0]) == AstBase.BULLET){
-							Bullet bullet = new Bullet(Integer.parseInt(line[2]), Integer.parseInt(line[3]), Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+							Bullet bullet = new Bullet(Integer.parseInt(line[2]), Integer.parseInt(line[3]), Integer.parseInt(line[5]), Integer.parseInt(line[6]), 2);
 							if(line[6].equals("3")){
 								alienbullets.add(bullet);
 							} else {
