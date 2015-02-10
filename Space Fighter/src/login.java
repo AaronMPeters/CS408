@@ -237,8 +237,8 @@ public class login {
 		    	    	JOptionPane.showMessageDialog(null, "Please enter a valid number for age!", "Error", JOptionPane.PLAIN_MESSAGE);
 						return;
 		    	  }
-		    	  if(Integer.parseInt(age) <= 0){
-		    		  JOptionPane.showMessageDialog(null, "Please enter a valid number for age!", "Error", JOptionPane.PLAIN_MESSAGE);
+		    	  if(Integer.parseInt(age) <= 65 && Integer.parseInt(age) >= 13){
+		    		  JOptionPane.showMessageDialog(null, "Sorry, you must be older than 12 and younger than 65 to play this game due to government regulations.", "Error", JOptionPane.PLAIN_MESSAGE);
 					  return;
 		    	  }
 		    	  if(mailCheck(mail) == false){
