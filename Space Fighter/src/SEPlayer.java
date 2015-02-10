@@ -1,9 +1,4 @@
 
-/*by Huyue GU
- * 
- * Built on 3rd Aug 2011
- */
-
 import javax.media.ControllerListener;
 import java.io.*;
 
@@ -14,7 +9,6 @@ import javax.media.Manager;
 import javax.media.NoPlayerException;   
 import javax.media.Player;
 import javax.media.Time;
-
 
 
 public class SEPlayer implements ControllerListener{

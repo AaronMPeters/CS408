@@ -33,7 +33,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private JRadioButton graExtTrue, graExtFalse, graVisTrue, graVisFalse,
 			unlimLifeTrue, unlimLifeFalse;
 	private ButtonGroup graExt, graVis, unlimLife;
-	private JButton resetScore, loadGame, okButton, cancelButton, saveGame, quit;
+	private JButton resetScore, loadGame, okButton, cancelButton, saveGame, quit, viewProfile;
 	private JTextField numAstField, startLevel;
 	private Boolean run;
 	private int score1, score2;
@@ -103,6 +103,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		unlimLife.add(unlimLifeTrue);
 		unlimLife.add(unlimLifeFalse);
 		unlimLifeFalse.setSelected(true);
+		
+		viewProfile = new JButton("View Profile");
+		viewProfile.addActionListener(this);
 
 		resetScore = new JButton("Reset Score Now");
 		resetScore.addActionListener(this);
@@ -140,12 +143,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		settingPanel.add(numAstField);
 		settingPanel.add(new JLabel("Starting level:"));
 		settingPanel.add(startLevel);
-		settingPanel.add(resetScore);
+		//settingPanel.add(resetScore);
 		settingPanel.add(quit);
-		settingPanel.add(saveGame);
-		settingPanel.add(loadGame);
+		//settingPanel.add(saveGame);
+		//settingPanel.add(loadGame);
 		settingPanel.add(okButton);
-		settingPanel.add(cancelButton);
+		settingPanel.add(viewProfile);
+		//settingPanel.add(cancelButton);
 
 		settingPanel.setVisible(true);
 
@@ -340,7 +344,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	public void gamePlay() {
 
 		while (true) {
-			System.out.print("here");
+			//System.out.print("here");
 			if (run) {
 
 				gameRender();
