@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.Image;
 
 public class GUI implements Runnable, KeyListener, ActionListener {
 	public JFrame mainf;
@@ -28,6 +33,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private JPanel settingPanel;
 	private JRadioButton graExtTrue, graExtFalse, graVisTrue, graVisFalse,
 			unlimLifeTrue, unlimLifeFalse;
+	private JComboBox modeList;
 	private ButtonGroup graExt, graVis, unlimLife;
 	private JButton resetScore, loadGame, okButton, cancelButton, saveGame, quit;
 	private JTextField numAstField, startLevel;
@@ -50,6 +56,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private SEPlayer se;
 	private LinkedList<Long> bq1,bq2;
 	static Boolean quitB = false;
+	
 
 	// settings
 	private int width, height;					// default screen width, height
@@ -64,6 +71,10 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private int p2_attack = KeyEvent.VK_J;
 	private int menu = KeyEvent.VK_ESCAPE;
 	private boolean fullscreen = true;
+	private int mode;
+	private int SINGLE_PLAYER = 0;
+	private int TWO_PLAYER = 1;
+	private int AI = 2;
 
 	GUI() {
 		se = new SEPlayer();
@@ -113,6 +124,11 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		unlimLife.add(unlimLifeTrue);
 		unlimLife.add(unlimLifeFalse);
 		unlimLifeFalse.setSelected(true);
+		
+		String[] modes = { "Single Player", "Two Player", "Boss Fight" };
+		modeList = new JComboBox(modes);
+		modeList.setSelectedIndex(0);
+		modeList.addActionListener(this);
 
 		resetScore = new JButton("Reset Score Now");
 		resetScore.addActionListener(this);
@@ -137,7 +153,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		saveGame.addActionListener(this);
 		saveGame.setEnabled(false);
 
-		settingPanel = new JPanel(new GridLayout(8, 2));
+		settingPanel = new JPanel(new GridLayout(9, 2));
 		settingPanel.setSize(200, 200);
 		settingPanel.setBackground(Color.WHITE);
 		settingPanel.add(graExtTrue);
@@ -150,12 +166,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		settingPanel.add(numAstField);
 		settingPanel.add(new JLabel("Starting level:"));
 		settingPanel.add(startLevel);
+		settingPanel.add(new JLabel("Game mode:"));
+		settingPanel.add(modeList);
 		settingPanel.add(resetScore);
 		settingPanel.add(quit);
 		settingPanel.add(saveGame);
 		settingPanel.add(loadGame);
 		settingPanel.add(okButton);
-		settingPanel.add(cancelButton);
+		settingPanel.add(cancelButton);	
 
 		settingPanel.setVisible(true);
 
@@ -221,6 +239,12 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			reset_ship1();
 		if(life2 > 0)
 			reset_ship2();
+		
+		if (mode == SINGLE_PLAYER) {
+			ship2.isAlive = false;
+		}
+		
+		
 		bullets = new ArrayList<Bullet>();
 		smallAsts = new ArrayList<AsteroidSmall>();
 		alien = new AlienShip((int)(Math.random() * width), (int)(Math.random() * height), 2 + level, 180, 200);
@@ -230,6 +254,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		alientime = 0;
 		rogueShip = new Ship((int)(Math.random() * width), (int)(Math.random() * height), 0, 0);
 		rogueShip.speed = level + 3;
+		if (mode == AI) {
+			alientime = 10;
+			alien.hp = 50;
+			rogueShip.isAlive = false;
+		} else {
+			alientime = 0;
+		}
 	}
 
 	private void paintScreen() { // mainp.paintComponents(g2d);
@@ -270,6 +301,18 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		} else {
 			g2d.drawString("Ship2 Life: " + life2, 0, 80);
 		}
+		if (mode != SINGLE_PLAYER) {
+			g2d.drawString("Ship2 Score: " + score2, 0, 60);
+			if (Setting.unlimitLife) {
+				g2d.drawString("Ship2 Life: unlimited", 0, 80);
+			} else {
+				g2d.drawString("Ship2 Life: " + life2, 0, 80);
+			}
+		}
+
+		if (mode == AI) {
+			g2d.drawString("Boss HP: " + alien.hp, 0, 100);
+		}
 		g2d.drawString("Level: " + level, width/2-30, 20);
 
 		if (gravVis) {
@@ -292,6 +335,16 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				g2d.drawPolygon(ship1.LASER[0], ship1.LASER[1], ship1.LASER[0].length);
 			} else if (ship1.currentWeapon == 2) {
 				g2d.drawPolygon(ship1.BOMB[0], ship1.BOMB[1], ship1.BOMB[0].length);
+			}
+		}
+		
+		if (mode != SINGLE_PLAYER) {
+			if (ship2.isAlive) {
+				g2d.setTransform(identity);
+				this.g2d.setColor(Color.GREEN);
+				g2d.translate(ship2.x, ship2.y);
+				g2d.rotate(Math.toRadians(ship2.heading));
+				g2d.drawPolygon(ship2.shipX, ship2.shipY, ship2.shipX.length);
 			}
 		}
 
@@ -423,7 +476,8 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	}
 
 	private void checkLevel() {
-		if (astList.isEmpty() && (!alien.isAlive) && (!rogueShip.isAlive) && smallAsts.isEmpty()) {
+		if (astList.isEmpty() && (!alien.isAlive) && (!rogueShip.isAlive) && smallAsts.isEmpty() && mode != AI) {
+
 			level++;
 			Setting.astNum += 2;
 			obInit();
@@ -809,6 +863,46 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 						tempB.add(bullet);
 					}
 				}
+				
+				if (mode == TWO_PLAYER) {
+					if (bullet.owner == 2
+							&& ((bullet.x < (ship1.x + 10)) && (bullet.x > (ship1.x - 10)))
+							&& ((bullet.y < (ship1.y + 10)) && (bullet.y > (ship1.y - 10)))) {
+						ship1 = new Ship(200, 200, 0, 0);
+						if (life1 == 0) {
+							ship1.isAlive = false;
+						}
+						if (life1 > 0) {
+							life1--;
+						}
+						if (life1 == 0) {
+							ship1.isAlive = false;
+						}
+						score2 += 100;
+						se.SePlayer("explosion.wav", "1");
+						tempB.add(bullet);
+					}
+
+					if (bullet.owner == 1
+							&& ((bullet.x < (ship2.x + 10)) && (bullet.x > (ship2.x - 10)))
+							&& ((bullet.y < (ship2.y + 10)) && (bullet.y > (ship2.y - 10)))) {
+						ship2 = new Ship(400, 200, 0, 0);
+						if (life2 == 0) {
+							ship2.isAlive = false;
+						}
+						if (life2 > 0) {
+							life2--;
+						}
+						if (life2 == 0) {
+							ship2.isAlive = false;
+						}
+						score1 += 100;
+						se.SePlayer("explosion.wav", "1");
+						tempB.add(bullet);
+					}
+
+				}
+
 
 				if (((bullet.x < (rogueShip.x + 20)) && (bullet.x > (rogueShip.x - 20)))
 						&& ((bullet.y < (rogueShip.y + 10)) && (bullet.y > (rogueShip.y - 10)))) {
@@ -1279,8 +1373,12 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				life1 = 3;
 				life2 = 3;
 			}
-
-			Setting.astNum = Integer.parseInt(numAstField.getText());
+			
+			if (mode != AI) {
+				Setting.astNum = Integer.parseInt(numAstField.getText());
+			} else {
+				Setting.astNum = 0;
+			}
 
 			settingPanel.setVisible(false);
 			mainp.requestFocus();
@@ -1299,13 +1397,27 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			settingPanel.setVisible(false);
 			mainp.requestFocus();
 			run = true;
-		} else if (event.getSource() == quit){
-		    int reply = JOptionPane.showConfirmDialog(null,"You sure you want to quit?", "quit", JOptionPane.YES_NO_OPTION);
-	        if (reply == JOptionPane.YES_OPTION) {
-	          quitB = false;
-	          new HighScore(score1, score2, 0);
+		} else if (event.getSource() == quit) {
+			int reply = JOptionPane.showConfirmDialog(null,
+					"You sure you want to quit?", "quit",
+					JOptionPane.YES_NO_OPTION);
+			if (reply == JOptionPane.YES_OPTION) {
+				quitB = false;
+				new HighScore(score1, score2, 0);
 
-	        }
+			}
+		} else if (event.getSource() == modeList) {
+			JComboBox cb = (JComboBox) event.getSource();
+			mode = cb.getSelectedIndex();
+			System.out.println("mode change to " + mode);
+			if (mode == AI) {
+				numAstField.setEnabled(false);
+				// startLevel.setEnabled(false);
+			} else {
+				numAstField.setEnabled(true);
+				// startLevel.setEnabled(true);
+			}
+
 		}
 
 	}
