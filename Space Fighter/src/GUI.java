@@ -340,7 +340,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	public void gamePlay() {
 
 		while (true) {
-			System.out.print("here");
+			//System.out.print("here");
 			if (run) {
 
 				gameRender();
@@ -361,7 +361,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 					checkLevel();
 				} else {
 					run = false;
-					new HighScore(score1, score2, 1);
+					new HighScore2();
 				
 				}
 				try {
@@ -1252,7 +1252,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		    int reply = JOptionPane.showConfirmDialog(null,"You sure you want to quit?", "quit", JOptionPane.YES_NO_OPTION);
 	        if (reply == JOptionPane.YES_OPTION) {
 	          quitB = false;
-	          new HighScore(score1, score2, 0);
+	          new HighScore2();
 
 	        }
 		}
