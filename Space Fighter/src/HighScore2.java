@@ -54,12 +54,12 @@ public class HighScore2 extends JFrame implements ActionListener{
 				System.out.println("Creating statement...");
 				stmt = conn.createStatement();
 				String sql;
-				sql = "SELECT * FROM CS408.CS408";
+				sql = "SELECT * FROM CS408.CS408 ORDER BY score DESC LIMIT 10";
 				ResultSet rs = stmt.executeQuery(sql);
 				
 				
 				
-				
+				//new UpdateScore("test1",201);
 				//STEP 5: Extract data from result set
 			      while(rs.next()){
 			         //Retrieve by column name
