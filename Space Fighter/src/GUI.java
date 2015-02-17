@@ -29,7 +29,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private JRadioButton graExtTrue, graExtFalse, graVisTrue, graVisFalse,
 			unlimLifeTrue, unlimLifeFalse;
 	private ButtonGroup graExt, graVis, unlimLife;
-	private JButton resetScore, loadGame, okButton, cancelButton, saveGame, quit, viewProfile;
+	private JButton resetScore, loadGame, okButton, cancelButton, saveGame, quit, viewProfile, logout;
 	private JTextField numAstField, startLevel;
 	private Boolean run;
 	private int score1, score2;
@@ -116,6 +116,11 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		
 		viewProfile = new JButton("View Profile");
 		viewProfile.addActionListener(this);
+		viewProfile.addKeyListener(this);
+		
+		logout = new JButton("Logout");
+		logout.addActionListener(this);
+		logout.addKeyListener(this);
 
 		resetScore = new JButton("Reset Score Now");
 		resetScore.addActionListener(this);
@@ -159,6 +164,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		//settingPanel.add(loadGame);
 		settingPanel.add(okButton);
 		settingPanel.add(viewProfile);
+		settingPanel.add(logout);
 		//settingPanel.add(cancelButton);
 
 		settingPanel.setVisible(true);
@@ -1311,6 +1317,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 	        }
 		}
-
+		else if (event.getSource() == viewProfile){
+			profile myProfile = new profile();
+			myProfile.showProfile();
+		}
+		else if (event.getSource() == logout){
+			login myLogin = new login();
+			myLogin.createloginFrame();
+		}
 	}
 }
