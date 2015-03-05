@@ -1,20 +1,15 @@
 
 import java.sql.*;
 
+import constant.ServerConstants;
+
 
 
 public class UpdateScore {
 	
 	public UpdateScore(String user,int score) {
 		
-		// TODO Auto-generated constructor stub
-				 String dbName = "CS408";
-				  String userName = "TEST";
-				  String password = "TESTTEST";
-				  String hostname = "test.cuiczhxpopzs.us-west-2.rds.amazonaws.com";
-				  String port = "3306";
-				  String jdbcUrl = "jdbc:mysql://test.cuiczhxpopzs.us-west-2.rds.amazonaws.com:3306/?user=TEST&password=" + password;
-				  
+		
 				   Connection conn = null;
 				   Statement stmt = null;
 				  
@@ -33,7 +28,7 @@ public class UpdateScore {
 				try {		
 					//System.out.println("jdbcUrl: " + jdbcUrl);
 					conn = DriverManager
-					.getConnection(jdbcUrl);
+					.getConnection(ServerConstants.jdbcUrl);
 					System.out.println("check");
 					
 				} catch (SQLException e) {
