@@ -473,8 +473,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 					checkLevel();
 				} else {
 					run = false;
-					new HighScore(score1, score2, 1);
-
+					new HighScore2();
 				}
 				try {
 					Thread.sleep(100);
@@ -1409,13 +1408,11 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			settingPanel.setVisible(false);
 			mainp.requestFocus();
 			run = true;
-		} else if (event.getSource() == quit) {
-			int reply = JOptionPane.showConfirmDialog(null,
-					"You sure you want to quit?", "quit",
-					JOptionPane.YES_NO_OPTION);
-			if (reply == JOptionPane.YES_OPTION) {
-				quitB = false;
-				new HighScore(score1, score2, 0);
+		} else if (event.getSource() == quit){
+		    int reply = JOptionPane.showConfirmDialog(null,"You sure you want to quit?", "quit", JOptionPane.YES_NO_OPTION);
+	        if (reply == JOptionPane.YES_OPTION) {
+	          quitB = false;
+	          new HighScore2();
 
 			}
 		} else if (event.getSource() == modeList) {
