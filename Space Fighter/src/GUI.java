@@ -5,6 +5,8 @@ import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,11 +58,10 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private SEPlayer se;
 	private LinkedList<Long> bq1,bq2;
 	static Boolean quitB = false;
-	
 
 	// settings
 	private int width, height;					// default screen width, height
-	private Image weapon1;
+	private Image weaponv1, weaponv2, weaponv3, weaponw1, weaponw2, weaponw3;
 	private int p1_forward = KeyEvent.VK_UP;
 	private int p1_left = KeyEvent.VK_LEFT;
 	private int p1_right = KeyEvent.VK_RIGHT;
@@ -93,8 +94,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			bq1.addLast(System.currentTimeMillis());
 			bq2.addLast(System.currentTimeMillis());
 		}
-		
-		
+
 		Setting.gravitationalIsExist = false;
 		Setting.gravitationalIsVisible = false;
 		mainp = new JPanel();
@@ -197,7 +197,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		this.width = (fullscreen ? gd.getDisplayMode().getWidth() : 600 );
 		this.height = (fullscreen? gd.getDisplayMode().getHeight() : 400 );
-		weapon1 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/v1.png"));
+
+		weaponv1 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/v1.png"));
+		weaponv2 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/v2.png"));
+		weaponv3 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/v3.png"));
+		weaponw1 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/w1.png"));
+		weaponw2 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/w2.png"));
+		weaponw3 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/w3.png"));
 
 		mainf.setSize(width, height);
 		mainf.setResizable(false);
@@ -207,6 +213,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		mainf.add(settingPanel);
 		mainf.addKeyListener(this);
 		mainf.setVisible(true);
+
 	}
 
 	private void reset_score() {
@@ -337,6 +344,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		}
 
 		// System.out.print("here");
+
 		if (ship1.isAlive) {
 			g2d.setTransform(identity);
 			this.g2d.setColor(Color.ORANGE);
@@ -344,10 +352,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.rotate(Math.toRadians(ship1.heading));
 			g2d.drawPolygon(ship1.shipX, ship1.shipY, ship1.shipX.length);
 			if (ship1.currentWeapon == 1) {
-				g2d.drawImage(weapon1,-15,-15,null);
+				g2d.drawImage(weaponv1,-15,-15,null);
 				g2d.drawPolygon(ship1.LASER[0], ship1.LASER[1], ship1.LASER[0].length);
 			} else if (ship1.currentWeapon == 2) {
+				g2d.drawImage(weaponv2,-15,-15,null);
 				g2d.drawPolygon(ship1.BOMB[0], ship1.BOMB[1], ship1.BOMB[0].length);
+			} else {
+				g2d.drawImage(weaponv3,-15,-15,null);
 			}
 		}
 		
@@ -358,6 +369,15 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				g2d.translate(ship2.x, ship2.y);
 				g2d.rotate(Math.toRadians(ship2.heading));
 				g2d.drawPolygon(ship2.shipX, ship2.shipY, ship2.shipX.length);
+				if (ship2.currentWeapon == 1) {
+					g2d.drawImage(weaponw1,-15,-15,null);
+					g2d.drawPolygon(ship2.LASER[0], ship2.LASER[1], ship2.LASER[0].length);
+				} else if (ship2.currentWeapon == 2) {
+					g2d.drawImage(weaponw2,-15,-15,null);
+					g2d.drawPolygon(ship2.BOMB[0], ship2.BOMB[1], ship2.BOMB[0].length);
+				} else {
+					g2d.drawImage(weaponw3,-15,-15,null);
+				}
 			}
 		}
 
@@ -368,9 +388,13 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.rotate(Math.toRadians(ship2.heading));
 			g2d.drawPolygon(ship2.shipX, ship2.shipY, ship2.shipX.length);
 			if (ship2.currentWeapon == 1) {
+				g2d.drawImage(weaponw1,-15,-15,null);
 				g2d.drawPolygon(ship2.LASER[0], ship2.LASER[1], ship2.LASER[0].length);
 			} else if (ship2.currentWeapon == 2) {
+				g2d.drawImage(weaponw2,-15,-15,null);
 				g2d.drawPolygon(ship2.BOMB[0], ship2.BOMB[1], ship2.BOMB[0].length);
+			} else {
+				g2d.drawImage(weaponw3,-15,-15,null);
 			}
 		}
 		this.g2d.setColor(Color.WHITE);
