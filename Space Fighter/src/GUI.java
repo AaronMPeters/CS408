@@ -197,7 +197,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		this.width = (fullscreen ? gd.getDisplayMode().getWidth() : 600 );
 		this.height = (fullscreen? gd.getDisplayMode().getHeight() : 400 );
-		weapon1 = new ImageIcon(this.getClass().getResource("v1.png")).getImage();
+		weapon1 = Toolkit.getDefaultToolkit().createImage(GUI.class.getResource("/res/v1.png"));
 
 		mainf.setSize(width, height);
 		mainf.setResizable(false);
@@ -344,6 +344,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.rotate(Math.toRadians(ship1.heading));
 			g2d.drawPolygon(ship1.shipX, ship1.shipY, ship1.shipX.length);
 			if (ship1.currentWeapon == 1) {
+				g2d.drawImage(weapon1,-15,-15,null);
 				g2d.drawPolygon(ship1.LASER[0], ship1.LASER[1], ship1.LASER[0].length);
 			} else if (ship1.currentWeapon == 2) {
 				g2d.drawPolygon(ship1.BOMB[0], ship1.BOMB[1], ship1.BOMB[0].length);
