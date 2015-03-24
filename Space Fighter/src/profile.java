@@ -97,8 +97,5 @@ public class profile {
 		//testing-----------------------
 		 //profile newUser = new  profile();
 		   //newUser.showProfile();
-		    
-		    login test = new  login();
-		    test.createloginFrame();
 	}
 }
