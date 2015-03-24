@@ -32,14 +32,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private Graphics2D g2d;
 	private Image dbImage;
 	private Ship ship1, ship2, rogueShip;
-	private JPanel settingPanel;
+	public JPanel settingPanel;
 	private JRadioButton graExtTrue, graExtFalse, graVisTrue, graVisFalse,
 			unlimLifeTrue, unlimLifeFalse;
 	private JComboBox modeList;
 	private ButtonGroup graExt, graVis, unlimLife;
 	private JButton resetScore, loadGame, okButton, cancelButton, saveGame, quit, viewProfile, logout;
 	private JTextField numAstField, startLevel;
-	private Boolean run;
+	public Boolean run;
 	private int score1, score2;
 	private int life1, life2;
 	private List<Asteroid> astList;
@@ -187,7 +187,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		settingPanel.add(logout);
 		//settingPanel.add(cancelButton);
 
-		settingPanel.setVisible(true);
+		settingPanel.setVisible(false);
 
 		identity = new AffineTransform();
 
@@ -328,7 +328,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				g2d.drawString("Ship2 Life: " + life2, 0, 80);
 			}
 		}
-
+		
 		if (mode == AI) {
 			g2d.drawString("Boss HP: " + alien.hp, 0, 100);
 		}
@@ -466,18 +466,14 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 	}
 
-	public static void main(String args[]) {
-		GUI gui = new GUI();
-		gui.gamePlay();
-
-	}
-
 	public void gamePlay() {
 
 		while (true) {
 			try {
 				Thread.sleep( 20 );
 			} catch( InterruptedException ex ) {}
+			
+			
 			if (run) {
 
 				gameRender();
@@ -506,7 +502,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 					e.printStackTrace();
 				}
+				
 			}
+			
 		}
 
 	}
@@ -1135,10 +1133,19 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			ship2.speed++;
 		} else if (arg0.getKeyCode() == menu) {
 			// System.out.println("speed______");
-			run = false;
-			startLevel.setText("" + level);
-			numAstField.setText("" + Setting.astNum);
-			settingPanel.setVisible(true);
+			if ( run )
+			{
+				run = false;
+				startLevel.setText("" + level);
+				numAstField.setText("" + Setting.astNum);
+				settingPanel.setVisible(true);
+			}
+			else
+			{
+				settingPanel.setVisible(false);
+				mainp.requestFocus();
+				run = true;
+			}
 		} else if (arg0.getKeyCode() == KeyEvent.VK_Z) {
 			ship2.weaponchange();
 		} else if (arg0.getKeyCode() == KeyEvent.VK_COMMA) {
@@ -1459,7 +1466,15 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		}
 		else if (event.getSource() == logout){
 			login myLogin = new login();
-			myLogin.createloginFrame();
+			settingPanel.setVisible(false);
+			myLogin.createloginFrame(this);
 		}
+	}
+	
+	public static void main(String args[]) {
+		GUI gui = new GUI();
+		login test = new login();
+		test.createloginFrame(gui);
+        gui.gamePlay();
 	}
 }

@@ -21,9 +21,9 @@ public class login {
 	File userInfo;
 	FileWriter out;
 	profile newUser = new profile();
+	GUI g;
 	
-	
-	public void createloginFrame(){
+	public void createloginFrame(GUI g){
 		f = new JFrame("Player Login");
 		f.setSize(300, 150);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,6 +31,7 @@ public class login {
 		f.add(p);
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
+		this.g = g;
 	}
 	
 	
@@ -203,7 +204,12 @@ public class login {
 	            newUser.inforLoad(name, curMail, Integer.parseInt(curAge) );
 	            JOptionPane.showMessageDialog(null, "You have successfully logged in!", "Welcome", JOptionPane.PLAIN_MESSAGE);
 	            f.setVisible(false);
-	            newUser.showProfile();
+//	            g.gamePlay();
+	            g.settingPanel.setVisible(true);
+/*	            GUI gui = new GUI();
+	            gui.settingPanel.setVisible(true);
+	            gui.run = true;
+	            */
 	            // pop up the main menu here-----------------------------------------------------
 	          }
 	        }
