@@ -178,7 +178,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		settingPanel.add(modeList);
 		settingPanel.add(resetScore);
 		//settingPanel.add(resetScore);
-		settingPanel.add(quit);
+		//settingPanel.add(quit);
 		//settingPanel.add(saveGame);
 		//settingPanel.add(loadGame);
 		settingPanel.add(okButton);

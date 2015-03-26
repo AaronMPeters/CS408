@@ -21,6 +21,7 @@ public class profile {
 	  String curName, curMail;
 	  int curAge, curScore, curRank;
 	  Point point;
+	  GUI g;
 	  
 	  public void screenSize(){
 		    GraphicsEnvironment ge=GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -85,7 +86,7 @@ public class profile {
 						    if( o == back ){
 						    	//back to the main menu----------------------------------------
 						    	profile.setVisible(false);
-						    	System.exit(0);
+						    	g.settingPanel.setVisible(true);
 						    }
 						}
 		    		}

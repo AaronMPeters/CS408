@@ -83,7 +83,7 @@ public class login {
 	    		}
 	    );
 		
-		cancel = new JButton("Canel");
+		cancel = new JButton("Exit");
 		cancel.setBounds(10, 80, 80, 25);
 		cancel.addActionListener(
 	    		new ActionListener(){
