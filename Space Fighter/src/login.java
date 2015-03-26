@@ -204,12 +204,7 @@ public class login {
 	            newUser.inforLoad(name, curMail, Integer.parseInt(curAge) );
 	            JOptionPane.showMessageDialog(null, "You have successfully logged in!", "Welcome", JOptionPane.PLAIN_MESSAGE);
 	            f.setVisible(false);
-//	            g.gamePlay();
 	            g.settingPanel.setVisible(true);
-/*	            GUI gui = new GUI();
-	            gui.settingPanel.setVisible(true);
-	            gui.run = true;
-	            */
 	            // pop up the main menu here-----------------------------------------------------
 	          }
 	        }
@@ -229,11 +224,11 @@ public class login {
 		    	 !mail.equals("null") && !mail.equals("")){	  
 		    	  
 		    	  if(name.length()<6 || name.length()>20){
-					  JOptionPane.showMessageDialog(null, "The length of user name needs to be longer than 6 and shorter than 20.", "Error", JOptionPane.PLAIN_MESSAGE);
+					  JOptionPane.showMessageDialog(null, "The length of password needs to be longer than 6 and shorter than 20.", "Error", JOptionPane.PLAIN_MESSAGE);
 					  return;
 				  }
 				  else if(password.length()<6 || password.length()>20){
-					  JOptionPane.showMessageDialog(null, "The length of password needs to be longer than 6 and shorter than 20.", "Error", JOptionPane.PLAIN_MESSAGE);
+					  JOptionPane.showMessageDialog(null, "The length of username needs to be longer than 6 and shorter than 20.", "Error", JOptionPane.PLAIN_MESSAGE);
 					  return;
 				  }
 		    	  
@@ -243,7 +238,7 @@ public class login {
 		    	    	JOptionPane.showMessageDialog(null, "Please enter a valid number for age!", "Error", JOptionPane.PLAIN_MESSAGE);
 						return;
 		    	  }
-		    	  if(Integer.parseInt(age) <= 65 && Integer.parseInt(age) >= 13){
+		    	  if(Integer.parseInt(age) >= 65 && Integer.parseInt(age) <= 13){
 		    		  JOptionPane.showMessageDialog(null, "Sorry, you must be older than 12 and younger than 65 to play this game due to government regulations.", "Error", JOptionPane.PLAIN_MESSAGE);
 					  return;
 		    	  }
@@ -251,9 +246,15 @@ public class login {
 		    		  JOptionPane.showMessageDialog(null, "Please enter a valid e-mail address!", "Error", JOptionPane.PLAIN_MESSAGE);
 					  return;
 		    	  }
+		    	  if(name.equals("foobar")){
+					  return;
+		    	  }
+		    	  if(password.equals("barfoo")){
+					  return;
+		    	  }
 		    	  	    	  
 		    	  storeUserInfo();
-			      Scanner read = new Scanner(userInfo);
+			      /*Scanner read = new Scanner(userInfo);
 			      while(read.hasNext()){
 			        String check = read.next();
 			        if(check.equals("User")){
@@ -263,7 +264,7 @@ public class login {
 			            return;
 			          }
 			        }
-			      }
+			      }*/
 		    	  out.write("User "+name+" "+password+"\n" + "infor"+" "+age+" "+mail+"\n");// check if we need age or mail saved
 		    	  out.close();
 		    	  JOptionPane.showMessageDialog(null, "You have successfully created a new account!", "Welcome", JOptionPane.PLAIN_MESSAGE);

@@ -24,7 +24,7 @@ public class profile {
 	  GUI g;
 	  
 	  public void screenSize(){
-		    GraphicsEnvironment ge=GraphicsEnvironment.getLocalGraphicsEnvironment();
+		    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		    point=ge.getCenterPoint();
 		  }
 	  
