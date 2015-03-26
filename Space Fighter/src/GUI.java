@@ -76,6 +76,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private int SINGLE_PLAYER = 0;
 	private int TWO_PLAYER = 1;
 	private int AI = 2;
+	private boolean badLevel = false;
+	private int badcount = 0;
+	private int lazerCount = 0;
 
 	GUI() {
 		se = new SEPlayer();
@@ -452,6 +455,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			g2d.translate(alien.x, alien.y);
 			g2d.rotate(Math.toRadians(180));
 			g2d.drawPolygon(alien.xs, alien.ys, alien.xs.length);
+			reset_score();
 
 		}
 
@@ -512,7 +516,12 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 	private void checkLevel() {
 		if (astList.isEmpty() && (!alien.isAlive) && (!rogueShip.isAlive) && smallAsts.isEmpty() && mode != AI) {
 
-			level++;
+			if (level == 5 && !badLevel) {
+				badLevel = true;
+			} else {
+				level++;
+			}
+			
 			Setting.astNum += 2;
 			obInit();
 		}
@@ -605,6 +614,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 
 		if (Setting.gravitationalIsExist) {
 			if (ship1.isAlive) {
+				
 				if (ship1.x > 300) {
 					ship1.x--;
 				} else if (ship1.x < 300) {
@@ -880,6 +890,9 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				if (bullet.owner == 3) {
 					continue;
 				}
+				if (Setting.gravitationalIsExist) {
+					continue;
+				}
 				if (((bullet.x < (alien.x + 20)) && (bullet.x > (alien.x - 20)))
 						&& ((bullet.y < (alien.y + 10)) && (bullet.y > (alien.y - 10)))) {
 					if (alien.isAlive) {
@@ -890,7 +903,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 								score1 += 100;
 
 							} else {
-								score2 += 100;
+								score1 += 100;
 
 							}
 						}
@@ -912,7 +925,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 						if (life1 == 0) {
 							ship1.isAlive = false;
 						}
-						score2 += 100;
+						score1 += 100;
 						se.SePlayer("explosion.wav", "1");
 						tempB.add(bullet);
 					}
@@ -947,7 +960,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							score1 += 100;
 							alientime++;
 						} else {
-							score2 += 100;
+							score1 += 100;
 							alientime++;
 						}
 					}
@@ -964,7 +977,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							score1 += 5;
 							alientime++;
 						} else {
-							score2 += 5;
+							score1 += 5;
 							alientime++;
 						}
 					}
@@ -983,7 +996,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 						if (bullet.owner == Bullet.SHIP1) {
 							score1 += 10;
 						} else {
-							score2 += 10;
+							score1 += 10;
 						}
 					}
 				}
@@ -1112,7 +1125,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 		} else if (arg0.getKeyCode() == p1_forward) {
 			// System.out.println("speed______");
 			if (ship1.speed == 0) {
-				ship1.speed = 1;
+				ship1.speed = 2;
 			}
 			ship1.speed++;
 		} else if (arg0.getKeyCode() == p2_right) {
@@ -1147,9 +1160,15 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				run = true;
 			}
 		} else if (arg0.getKeyCode() == KeyEvent.VK_Z) {
-			ship2.weaponchange();
+			badcount++;
+			if (badcount <= 15) {
+				ship2.weaponchange();
+			}
 		} else if (arg0.getKeyCode() == KeyEvent.VK_COMMA) {
 			ship1.weaponchange();
+			if (score1 >= 100) {
+				ship1.weaponchange();				
+			}
 		}
 	}
 
@@ -1159,7 +1178,10 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			ship1.speed = 0;
 		} else if (arg0.getKeyCode() == p1_attack) {
 			// System.out.println("speed______");
-			if (ship1.isAlive) {
+			if (ship1.currentWeapon == 1) {
+				lazerCount++;
+			}
+			if (ship1.isAlive && !(lazerCount %5 == 0 && ship1.currentWeapon == 1) && !(smallAsts.size() == 5)) {
 				if(System.currentTimeMillis() - bq1.getFirst() > 200){
 
 				Bullet newBullet = new Bullet(ship1.x, ship1.y, ship1.heading,
@@ -1327,7 +1349,7 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 							level = Integer.parseInt(line[2]);
 						} else if (line[1].equals("unlimit")){
 							if(line[2].equals("true")){
-								Setting.unlimitLife = true;
+									Setting.unlimitLife = true;
 							} else{
 								Setting.unlimitLife = false;
 							}
@@ -1419,6 +1441,10 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			
 			if (mode != AI) {
 				Setting.astNum = Integer.parseInt(numAstField.getText());
+				if (Setting.astNum != 100) {
+					Setting.unlimitLife = false;
+				}
+
 			} else {
 				Setting.astNum = 0;
 			}
