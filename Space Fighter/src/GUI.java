@@ -1429,7 +1429,15 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 			}
 //			System.out.println(Setting.gravitationalIsVisible);
 
-			if (unlimLifeTrue.isSelected()) {
+
+			
+			if (mode != AI) {
+				Setting.astNum = Integer.parseInt(numAstField.getText());
+
+			} else {
+				Setting.astNum = 0;
+			}
+			if (unlimLifeTrue.isSelected() && Setting.astNum != 100) {
 				Setting.unlimitLife = true;
 				life1 = Integer.MAX_VALUE;
 				life2 = Integer.MAX_VALUE;
@@ -1437,16 +1445,6 @@ public class GUI implements Runnable, KeyListener, ActionListener {
 				Setting.unlimitLife = false;
 				life1 = 3;
 				life2 = 3;
-			}
-			
-			if (mode != AI) {
-				Setting.astNum = Integer.parseInt(numAstField.getText());
-				if (Setting.astNum != 100) {
-					Setting.unlimitLife = false;
-				}
-
-			} else {
-				Setting.astNum = 0;
 			}
 
 			settingPanel.setVisible(false);
