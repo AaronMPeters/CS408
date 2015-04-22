@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/packattk.iml" filepath="$PROJECT_DIR$/packattk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packattk-production/packattk-production.iml" filepath="$PROJECT_DIR$/packattk-production/packattk-production.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packattk-ui/packattk-ui.iml" filepath="$PROJECT_DIR$/packattk-ui/packattk-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packattk-widgetset/packattk-widgetset.iml" filepath="$PROJECT_DIR$/packattk-widgetset/packattk-widgetset.iml" />
+    </modules>
+  </component>
+</project>
